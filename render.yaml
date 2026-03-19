@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: submission-system
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 22.15.0
+      - key: HOST
+        value: 0.0.0.0
+      - key: UPLOADS_DIR
+        value: /opt/render/project/src/uploads
+    disk:
+      name: submission-uploads
+      mountPath: /opt/render/project/src/uploads
+      sizeGB: 1

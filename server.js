@@ -4,10 +4,10 @@ const path = require("path");
 const { randomUUID } = require("crypto");
 
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 const ROOT_DIR = __dirname;
 const DATA_PATH = path.join(ROOT_DIR, "data", "store.json");
-const UPLOADS_DIR = path.join(ROOT_DIR, "uploads");
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(ROOT_DIR, "uploads");
 const PUBLIC_FILES = new Map([
   ["/", "index.html"],
   ["/index.html", "index.html"],

@@ -35,6 +35,22 @@ Current upload constraints:
 - validation runs in both the browser and the server
 - the intake form supports drag-and-drop uploads and shows the selected file before submit
 
+## Hosted review setup
+
+This repo now includes [render.yaml](/Users/buttonpublishingone/Desktop/CODEX/Submission%20System%20Creation/render.yaml) for a Render deployment.
+
+Why Render:
+
+- this app needs a real Node web service, not static hosting
+- uploaded files need persistent disk storage across deploys
+- Render supports both a public web service and a mounted persistent disk
+
+The template is configured to:
+
+- run `npm start`
+- bind the app to `0.0.0.0`
+- persist uploads at `/opt/render/project/src/uploads`
+
 Good next steps if you want to turn this into a production-ready Submittable alternative:
 
 1. add authentication and role-based reviewer access
