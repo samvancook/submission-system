@@ -1,0 +1,72 @@
+{
+  "programs": [
+    {
+      "id": "spring-poetry-open",
+      "name": "Spring Poetry Open",
+      "dueDate": "April 22, 2026",
+      "fee": 18,
+      "description": "A general poetry call for full-length and chapbook-length work."
+    },
+    {
+      "id": "flash-prose-prize",
+      "name": "Flash Prose Prize",
+      "dueDate": "May 10, 2026",
+      "fee": 12,
+      "description": "Up to three flash prose pieces with a combined max of 2,000 words."
+    },
+    {
+      "id": "hybrid-folio-series",
+      "name": "Hybrid Folio Series",
+      "dueDate": "June 1, 2026",
+      "fee": 0,
+      "description": "Experimental, cross-genre, and visual-text projects for digital publication."
+    }
+  ],
+  "submissions": [
+    {
+      "id": "seed-talia-benton",
+      "programId": "spring-poetry-open",
+      "authorName": "Talia Benton",
+      "email": "talia@example.com",
+      "title": "Field Notes for Winter Birds",
+      "genre": "Poetry",
+      "wordCount": 54,
+      "fee": 18,
+      "coverLetter": "These poems come from a larger manuscript centered on migration, caretaking, and the pressure points of Midwestern weather.",
+      "attachmentName": "winter-birds.pdf",
+      "status": "In Review",
+      "notes": "Strong opening pages. Consider for second-round read.",
+      "createdAt": "2026-03-16T14:12:00.000Z"
+    },
+    {
+      "id": "seed-marcus-delaney",
+      "programId": "flash-prose-prize",
+      "authorName": "Marcus Delaney",
+      "email": "marcus@example.com",
+      "title": "Every Exit a Small Country",
+      "genre": "Fiction",
+      "wordCount": 1850,
+      "fee": 12,
+      "coverLetter": "Three linked flash pieces that track a family during the last month before their motel is sold.",
+      "attachmentName": "small-country.docx",
+      "status": "Shortlisted",
+      "notes": "Excellent compression. Finalist energy.",
+      "createdAt": "2026-03-14T20:40:00.000Z"
+    },
+    {
+      "id": "seed-priya-raman",
+      "programId": "hybrid-folio-series",
+      "authorName": "Priya Raman",
+      "email": "priya@example.com",
+      "title": "Annotated Constellation Map",
+      "genre": "Hybrid",
+      "wordCount": 2400,
+      "fee": 0,
+      "coverLetter": "This project braids diagrams, prose blocks, and footnotes about inheritance and astronomy.",
+      "attachmentName": "constellation-map.pdf",
+      "status": "Received",
+      "notes": "",
+      "createdAt": "2026-03-17T09:05:00.000Z"
+    }
+  ]
+}

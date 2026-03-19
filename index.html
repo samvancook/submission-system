@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slatehouse Submissions</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Submission Platform</p>
+        <h1>Slatehouse is a polished Submittable-style review hub for calls, contests, and editorial intake.</h1>
+        <p class="hero-text">
+          Collect entries, track fees and genres, review work as a team, and move pieces from inbox to shortlist without wrestling a spreadsheet.
+        </p>
+        <div class="hero-metrics">
+          <div>
+            <span class="metric-number" id="metric-submissions">0</span>
+            <span class="metric-label">total submissions</span>
+          </div>
+          <div>
+            <span class="metric-number" id="metric-open">0</span>
+            <span class="metric-label">open for review</span>
+          </div>
+          <div>
+            <span class="metric-number" id="metric-shortlist">0</span>
+            <span class="metric-label">shortlisted</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span class="status-dot"></span>
+          <span>Active calls</span>
+        </div>
+        <div class="callout-list" id="program-list"></div>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <section class="panel intake-panel">
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Public intake</p>
+            <h2>Start a submission</h2>
+          </div>
+          <span class="badge">Live form</span>
+        </div>
+
+        <form id="submission-form" class="submission-form">
+          <label>
+            Program
+            <select name="programId" required></select>
+          </label>
+          <div class="split-fields">
+            <label>
+              Author name
+              <input type="text" name="authorName" placeholder="Jordan Rivers" required>
+            </label>
+            <label>
+              Email
+              <input type="email" name="email" placeholder="jordan@example.com" required>
+            </label>
+          </div>
+          <div class="split-fields">
+            <label>
+              Project title
+              <input type="text" name="title" placeholder="What the Lake Kept" required>
+            </label>
+            <label>
+              Genre
+              <select name="genre" required>
+                <option value="">Choose one</option>
+                <option>Poetry</option>
+                <option>Fiction</option>
+                <option>Creative Nonfiction</option>
+                <option>Hybrid</option>
+                <option>Visual Narrative</option>
+              </select>
+            </label>
+          </div>
+          <div class="split-fields">
+            <label>
+              Word count
+              <input type="number" name="wordCount" min="1" placeholder="3200" required>
+            </label>
+            <label>
+              Submission fee
+              <input type="number" name="fee" min="0" step="0.01" placeholder="20" required>
+            </label>
+          </div>
+          <label>
+            Cover letter
+            <textarea name="coverLetter" rows="5" placeholder="Share a short note about this project and any publication history." required></textarea>
+          </label>
+          <label>
+            Attachment
+            <div class="upload-field" id="upload-field">
+              <input class="file-input" type="file" name="attachment" accept=".pdf,.doc,.docx,.rtf,.txt" required>
+              <button class="secondary-button upload-browse" id="upload-browse" type="button">Choose file</button>
+              <div class="upload-dropzone" id="upload-dropzone" tabindex="0" role="button" aria-describedby="upload-summary">
+                <strong>Drop your manuscript here</strong>
+                <span>or click to browse from your computer</span>
+              </div>
+              <div class="upload-summary is-empty" id="upload-summary" aria-live="polite">
+                <strong>No file selected</strong>
+                <span>Accepted formats: PDF, DOC, DOCX, RTF, TXT</span>
+              </div>
+            </div>
+            <span class="field-hint">Accepted: PDF, DOC, DOCX, RTF, TXT. Max size: 10 MB.</span>
+          </label>
+          <button class="primary-button" type="submit">Submit to queue</button>
+          <p class="form-feedback" id="form-feedback" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="panel review-panel">
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Editorial dashboard</p>
+            <h2>Review queue</h2>
+          </div>
+          <span class="badge badge-warm">Internal</span>
+        </div>
+
+        <div class="toolbar">
+          <label>
+            Search
+            <input type="search" id="search-input" placeholder="Title, author, email">
+          </label>
+          <label>
+            Status
+            <select id="status-filter">
+              <option value="all">All statuses</option>
+            </select>
+          </label>
+          <label>
+            Program
+            <select id="program-filter">
+              <option value="all">All programs</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="review-layout">
+          <aside class="submission-list" id="submission-list"></aside>
+          <article class="submission-detail empty-state" id="submission-detail">
+            <h3>Select a submission</h3>
+            <p>Choose a piece from the queue to inspect metadata, read the cover letter, add editorial notes, and update its status.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <template id="submission-card-template">
+    <button class="submission-card" type="button">
+      <div class="submission-card-top">
+        <p class="submission-title"></p>
+        <span class="pill"></span>
+      </div>
+      <p class="submission-meta"></p>
+      <p class="submission-program"></p>
+    </button>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>

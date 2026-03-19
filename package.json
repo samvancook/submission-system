@@ -1,0 +1,9 @@
+{
+  "name": "slatehouse-submissions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Submission system MVP with a dependency-free Node backend",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
