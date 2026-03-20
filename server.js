@@ -2,12 +2,15 @@ const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
 const { randomUUID } = require("crypto");
+const { Storage } = require("@google-cloud/storage");
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
 const ROOT_DIR = __dirname;
 const DATA_PATH = path.join(ROOT_DIR, "data", "store.json");
 const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(ROOT_DIR, "uploads");
+const GCS_BUCKET = process.env.GCS_BUCKET || "";
+const GCS_STORE_OBJECT = process.env.GCS_STORE_OBJECT || "data/store.json";
 const PUBLIC_FILES = new Map([
   ["/", "index.html"],
   ["/index.html", "index.html"],
@@ -32,6 +35,7 @@ const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 const MAX_JSON_BODY_BYTES = 1024 * 1024;
 const MAX_MULTIPART_BODY_BYTES = MAX_UPLOAD_BYTES + 1024 * 1024;
 const ALLOWED_FILE_EXTENSIONS = new Set([".pdf", ".doc", ".docx", ".rtf", ".txt"]);
+const storage = GCS_BUCKET ? new Storage() : null;
 
 const server = http.createServer(async (request, response) => {
   try {
@@ -97,7 +101,7 @@ async function handleApi(request, response, url) {
       coverLetter: payload.coverLetter.trim(),
       attachmentName: uploadedFile.originalName,
       attachmentStoredName: uploadedFile.storedName,
-      attachmentUrl: `/uploads/${uploadedFile.storedName}`,
+      attachmentUrl: uploadedFile.url,
       status: "Received",
       notes: "",
       createdAt: new Date().toISOString()
@@ -166,6 +170,12 @@ async function serveStatic(response, pathname) {
 }
 
 async function serveUpload(response, pathname) {
+  if (GCS_BUCKET) {
+    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.end("Not found");
+    return;
+  }
+
   const fileName = path.basename(pathname);
   const filePath = path.join(UPLOADS_DIR, fileName);
 
@@ -187,12 +197,36 @@ async function serveUpload(response, pathname) {
 }
 
 async function readStore() {
+  if (GCS_BUCKET) {
+    try {
+      const [content] = await storage.bucket(GCS_BUCKET).file(GCS_STORE_OBJECT).download();
+      return JSON.parse(content.toString("utf8"));
+    } catch (error) {
+      if (error.code === 404) {
+        const raw = await fs.readFile(DATA_PATH, "utf8");
+        const seedStore = JSON.parse(raw);
+        await writeStore(seedStore);
+        return seedStore;
+      }
+      throw error;
+    }
+  }
+
   const raw = await fs.readFile(DATA_PATH, "utf8");
   return JSON.parse(raw);
 }
 
 async function writeStore(store) {
-  await fs.writeFile(DATA_PATH, `${JSON.stringify(store, null, 2)}\n`, "utf8");
+  const serialized = `${JSON.stringify(store, null, 2)}\n`;
+
+  if (GCS_BUCKET) {
+    await storage.bucket(GCS_BUCKET).file(GCS_STORE_OBJECT).save(serialized, {
+      contentType: "application/json; charset=utf-8"
+    });
+    return;
+  }
+
+  await fs.writeFile(DATA_PATH, serialized, "utf8");
 }
 
 async function readJsonBody(request) {
@@ -296,16 +330,32 @@ async function persistUploadedFile(file) {
     throw createHttpError(400, fileError);
   }
 
-  await fs.mkdir(UPLOADS_DIR, { recursive: true });
   const safeName = sanitizeFileName(file.originalName);
   const storedName = `${randomUUID()}-${safeName}`;
-  const filePath = path.join(UPLOADS_DIR, storedName);
+  const storedPath = `uploads/${storedName}`;
 
+  if (GCS_BUCKET) {
+    const bucket = storage.bucket(GCS_BUCKET);
+    const uploadedFile = bucket.file(storedPath);
+    await uploadedFile.save(file.content, {
+      contentType: CONTENT_TYPES[path.extname(safeName).toLowerCase()] || "application/octet-stream"
+    });
+
+    return {
+      originalName: safeName,
+      storedName,
+      url: `https://storage.googleapis.com/${GCS_BUCKET}/${storedPath}`
+    };
+  }
+
+  await fs.mkdir(UPLOADS_DIR, { recursive: true });
+  const filePath = path.join(UPLOADS_DIR, storedName);
   await fs.writeFile(filePath, file.content);
 
   return {
     originalName: safeName,
-    storedName
+    storedName,
+    url: `/uploads/${storedName}`
   };
 }
 

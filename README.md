@@ -51,6 +51,20 @@ The template is configured to:
 - bind the app to `0.0.0.0`
 - persist uploads at `/opt/render/project/src/uploads`
 
+## Google Cloud plan
+
+For Google Cloud / Cloud Run, this app now supports moving both uploads and submission persistence into Google Cloud Storage.
+
+Use these environment variables in Cloud Run:
+
+- `GCS_BUCKET` for uploads and persisted app data
+- `GCS_STORE_OBJECT` if you want a custom object path for submission state
+
+When `GCS_BUCKET` is set:
+
+- uploaded files are saved to Cloud Storage instead of local disk
+- submission state is stored in Cloud Storage instead of `data/store.json`
+
 Good next steps if you want to turn this into a production-ready Submittable alternative:
 
 1. add authentication and role-based reviewer access
